@@ -4,5 +4,5 @@ node_modules/
 out/
 coverage/
 *.tsbuildinfo
-.env*.local
+.env
 .DS_Store
