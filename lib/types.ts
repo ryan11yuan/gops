@@ -15,7 +15,7 @@ export type ErrorCode =
 export class GameError extends Error {
   code: ErrorCode
   constructor(code: ErrorCode, message: string) {
-    super(message)
+    super(`${code}: ${message}`)
     this.name = 'GameError'
     this.code = code
   }
