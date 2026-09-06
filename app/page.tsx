@@ -1,3 +1,5 @@
+import { Home } from '@/components/Home'
+
 export default function HomePage() {
-  return <main style={{ padding: 24 }}>GOPS — coming together.</main>
+  return <Home />
 }
