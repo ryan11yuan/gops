@@ -163,3 +163,28 @@ export function submitBid(state: RoomState, seat: Seat, card: number, now?: numb
   if (next.bids.P1 != null && next.bids.P2 != null) next = resolveRound(next, now)
   return next
 }
+
+export function advanceRound(state: RoomState, now?: number): RoomState {
+  if (state.phase !== 'RESULT') throw new GameError('WRONG_PHASE', 'no result to advance from')
+  if (state.round >= ROUNDS) {
+    return { ...state, phase: 'GAMEOVER', revealedAt: null, bids: { P1: null, P2: null } }
+  }
+  const nextRound = state.round + 1
+  const nextPrize = state.prizeDeck[nextRound - 1]
+  return {
+    ...state,
+    phase: 'BIDDING',
+    round: nextRound,
+    prizeCard: nextPrize,
+    prizesRevealed: [...state.prizesRevealed, nextPrize],
+    bids: { P1: null, P2: null },
+    revealedAt: null,
+  }
+}
+
+export function finalResult(state: RoomState): { p1: number; p2: number; winner: Seat | 'DRAW' } {
+  const p1 = state.seats.P1.score
+  const p2 = state.seats.P2?.score ?? 0
+  const winner: Seat | 'DRAW' = p1 > p2 ? 'P1' : p2 > p1 ? 'P2' : 'DRAW'
+  return { p1, p2, winner }
+}
