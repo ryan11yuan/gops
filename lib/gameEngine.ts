@@ -188,3 +188,71 @@ export function finalResult(state: RoomState): { p1: number; p2: number; winner:
   const winner: Seat | 'DRAW' = p1 > p2 ? 'P1' : p2 > p1 ? 'P2' : 'DRAW'
   return { p1, p2, winner }
 }
+
+import type { PublicState } from '@/lib/types'
+
+const CONNECTED_WINDOW_MS = 8000
+
+export function requestRematch(state: RoomState, seat: Seat, now?: number): RoomState {
+  if (state.phase !== 'GAMEOVER') throw new GameError('WRONG_PHASE', 'game is not over')
+  const seats = {
+    ...state.seats,
+    [seat]: { ...state.seats[seat]!, wantsRematch: true },
+  } as RoomState['seats']
+  if (seats.P1?.wantsRematch && seats.P2?.wantsRematch) {
+    const reseeded: RoomState = { ...state, seats, seed: makeSeed(), phase: 'LOBBY' }
+    return startGame(reseeded, now)
+  }
+  return { ...state, seats }
+}
+
+export function publicStateFor(
+  state: RoomState,
+  seat: Seat,
+  now: number,
+  seen: { p1: number | null; p2: number | null },
+): PublicState {
+  const me = state.seats[seat]!
+  const oppSeat: Seat = seat === 'P1' ? 'P2' : 'P1'
+  const opp = state.seats[oppSeat]
+  const oppSeen = oppSeat === 'P1' ? seen.p1 : seen.p2
+  const last = state.log.at(-1)
+
+  return {
+    code: state.code,
+    phase: state.phase,
+    tieMode: state.tieMode,
+    round: state.round,
+    you: {
+      seat,
+      name: me.name,
+      hand: [...me.hand].sort((a, b) => a - b),
+      spent: me.spent,
+      score: me.score,
+    },
+    opponent: opp
+      ? {
+          name: opp.name,
+          cardsRemaining: opp.hand.length,
+          spent: opp.spent,
+          score: opp.score,
+          connected: oppSeen != null && now - oppSeen < CONNECTED_WINDOW_MS,
+        }
+      : null,
+    prizeCard: state.prizeCard,
+    prizesRevealed: state.prizesRevealed,
+    prizesRemaining: ROUNDS - state.prizesRevealed.length,
+    carry: state.carry,
+    youLocked: state.bids[seat] != null,
+    opponentLocked: state.bids[oppSeat] != null,
+    reveal:
+      state.phase === 'RESULT' && last
+        ? { p1Card: last.p1Card, p2Card: last.p2Card, winner: last.winner, awarded: last.awarded }
+        : null,
+    log: state.log,
+    finalResult: state.phase === 'GAMEOVER' ? finalResult(state) : null,
+    autoAdvanceAt: state.revealedAt != null ? state.revealedAt + AUTO_ADVANCE_MS : null,
+    youWantRematch: me.wantsRematch,
+    opponentWantsRematch: opp?.wantsRematch ?? false,
+  }
+}
