@@ -1,4 +1,5 @@
 import type { LogEntry, Seat } from '@/lib/types'
+import { rankLabel } from '@/lib/cards'
 
 export function RoundLog({ log, youSeat }: { log: LogEntry[]; youSeat: Seat }) {
   return (
@@ -30,11 +31,11 @@ export function RoundLog({ log, youSeat }: { log: LogEntry[]; youSeat: Seat }) {
                   <tr key={e.round}>
                     <td>{e.round}</td>
                     <td>
-                      {e.prize}
+                      {rankLabel(e.prize)}
                       {e.carryApplied ? ` (+${e.carryApplied})` : ''}
                     </td>
-                    <td>{mine}</td>
-                    <td>{theirs}</td>
+                    <td>{rankLabel(mine)}</td>
+                    <td>{rankLabel(theirs)}</td>
                     <td>
                       <span className={`result-pill ${tone}`}>{result}</span>
                     </td>

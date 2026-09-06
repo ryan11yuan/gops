@@ -1,4 +1,5 @@
 import { ClubPip } from '@/components/Marks'
+import { rankLabel, rankName } from '@/lib/cards'
 
 export function Hand({
   hand,
@@ -21,11 +22,12 @@ export function Hand({
             key={card}
             type="button"
             className="card-btn"
+            aria-label={rankName(card)}
             disabled={disabled}
             onClick={() => onPick(card)}
           >
             <ClubPip size={11} />
-            {card}
+            {rankLabel(card)}
           </button>
         ))}
       </div>

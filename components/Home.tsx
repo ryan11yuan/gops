@@ -152,8 +152,8 @@ export function Home() {
           <section className="accent-panel rules-panel">
             <h2 className="section-title">How a round works</h2>
             <ol className="steps">
-              <li>A prize card worth 1–13 points turns face up.</li>
-              <li>You each bid one card from your own 1–13 hand, in secret.</li>
+              <li>A prize card turns face up — Ace is 1 point, King is 13.</li>
+              <li>You each bid one card from your own Ace-to-King hand, in secret.</li>
               <li>Higher bid takes the prize. Both cards are spent for good.</li>
             </ol>
           </section>

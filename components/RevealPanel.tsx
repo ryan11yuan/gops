@@ -1,5 +1,6 @@
 import type { PublicState, Seat } from '@/lib/types'
 import { ClubPip } from '@/components/Marks'
+import { rankLabel, rankName } from '@/lib/cards'
 
 export function RevealPanel({
   reveal,
@@ -25,9 +26,11 @@ export function RevealPanel({
           <span
             className={`pcard reveal-card${youSeat === 'P1' ? ' is-yours' : ''}`}
             data-testid="reveal-p1"
+            role="img"
+            aria-label={rankName(reveal.p1Card)}
           >
             <ClubPip size={11} />
-            {reveal.p1Card}
+            {rankLabel(reveal.p1Card)}
           </span>
           <span className="caption">{youSeat === 'P1' ? 'You' : 'Them'}</span>
         </div>
@@ -36,9 +39,11 @@ export function RevealPanel({
           <span
             className={`pcard reveal-card is-second${youSeat === 'P2' ? ' is-yours' : ''}`}
             data-testid="reveal-p2"
+            role="img"
+            aria-label={rankName(reveal.p2Card)}
           >
             <ClubPip size={11} />
-            {reveal.p2Card}
+            {rankLabel(reveal.p2Card)}
           </span>
           <span className="caption">{youSeat === 'P2' ? 'You' : 'Them'}</span>
         </div>
