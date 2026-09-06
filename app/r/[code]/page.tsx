@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useParams } from 'next/navigation'
 import { NameGate } from '@/components/NameGate'
+import { GameBoard } from '@/components/GameBoard'
 import { useRoomState } from '@/hooks/useRoomState'
 
 export default function RoomPage() {
@@ -59,5 +60,5 @@ export default function RoomPage() {
       </main>
     )
   if (!room.state) return <main className="home"><p>Loading room {code}…</p></main>
-  return <pre>{JSON.stringify(room.state, null, 2)}</pre>
+  return <GameBoard state={room.state} error={room.error} actions={room.actions} code={code} />
 }
