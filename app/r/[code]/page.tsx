@@ -1,10 +1,12 @@
 'use client'
 
 import { useCallback, useEffect, useRef, useState } from 'react'
+import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { NameGate } from '@/components/NameGate'
 import { GameBoard } from '@/components/GameBoard'
 import { useRoomState } from '@/hooks/useRoomState'
+import { AlertIcon, ArrowLeftIcon } from '@/components/Marks'
 
 export default function RoomPage() {
   const params = useParams<{ code: string }>()
@@ -54,11 +56,30 @@ export default function RoomPage() {
   if (needsName) return <NameGate onSubmit={(name) => doJoin({ name })} />
   if (joinError && !playerId)
     return (
-      <main className="home">
-        <p role="alert" className="error">{joinError}</p>
-        <a href="/">Back to home</a>
+      <main className="home gate center-note">
+        <h1 className="display-sm">Can&rsquo;t get in.</h1>
+        <p role="alert" className="error">
+          <AlertIcon />
+          {joinError}
+        </p>
+        <Link href="/" className="btn btn-ghost">
+          <ArrowLeftIcon />
+          Back to home
+        </Link>
       </main>
     )
-  if (!room.state) return <main className="home"><p>Loading room {code}…</p></main>
+  if (!room.state)
+    return (
+      <main className="home center-note">
+        <p className="waiting" role="status">
+          <span className="waiting-dots" aria-hidden="true">
+            <i />
+            <i />
+            <i />
+          </span>
+          Opening room {code}
+        </p>
+      </main>
+    )
   return <GameBoard state={room.state} error={room.error} actions={room.actions} code={code} />
 }

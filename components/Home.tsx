@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import type { TieMode } from '@/lib/types'
+import { AlertIcon, CharacterMark, Sparkle, Squiggle } from '@/components/Marks'
 
 export function Home() {
   const router = useRouter()
@@ -42,39 +43,129 @@ export function Home() {
 
   return (
     <main className="home">
-      <h1>GOPS</h1>
-      <p className="tagline">Goofspiel — the Game of Pure Strategy. Bid smart, win the pile.</p>
+      <div className="brandbar">
+        <span className="wordmark">
+          <span className="wordmark-glyph" aria-hidden="true">
+            G
+          </span>
+          GOPS
+        </span>
+      </div>
 
-      <form onSubmit={createRoom} className="card">
-        <h2>New game</h2>
-        <label>
-          Your name
-          <input value={name} onChange={(e) => setName(e.target.value)} maxLength={20} required />
-        </label>
-        <fieldset>
-          <legend>On a tie</legend>
-          <label>
-            <input type="radio" name="tie" checked={tieMode === 'discard'} onChange={() => setTieMode('discard')} />
-            Discard the prize (default)
+      <section className="hero">
+        <div className="mark-row hero-marks">
+          <CharacterMark seed={0} />
+          <CharacterMark seed={1} />
+          <Squiggle />
+          <CharacterMark seed={2} />
+          <CharacterMark seed={3} />
+          <Sparkle />
+          <CharacterMark seed={4} />
+        </div>
+        <h1 className="display">
+          Read your rival. <span className="pill-word">Outbid</span> them.
+        </h1>
+        <p className="lede">
+          Goofspiel — the Game of Pure Strategy. Bid smart, win the pile. Nothing is hidden but
+          each other&rsquo;s nerve.
+        </p>
+      </section>
+
+      <div className="home-grid">
+        <form onSubmit={createRoom} className="surface form-card">
+          <header>
+            <h2 className="section-title">New game</h2>
+            <p>Create a room, then send the link to whoever you want to beat.</p>
+          </header>
+
+          <label className="field">
+            <span>Your name</span>
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              maxLength={20}
+              placeholder="Ada"
+              required
+            />
           </label>
-          <label>
-            <input type="radio" name="tie" checked={tieMode === 'carryover'} onChange={() => setTieMode('carryover')} />
-            Carry it over to the next round
-          </label>
-        </fieldset>
-        <button type="submit" disabled={busy || !name.trim()}>Create room</button>
-      </form>
 
-      <form onSubmit={joinByCode} className="card">
-        <h2>Join a game</h2>
-        <label>
-          Room code
-          <input value={joinCode} onChange={(e) => setJoinCode(e.target.value)} maxLength={4} placeholder="AB23" />
-        </label>
-        <button type="submit" disabled={!joinCode.trim()}>Join</button>
-      </form>
+          <fieldset className="choices">
+            <legend>On a tie</legend>
+            <label className="choice">
+              <input
+                type="radio"
+                name="tie"
+                checked={tieMode === 'discard'}
+                onChange={() => setTieMode('discard')}
+              />
+              <span className="choice-dot" aria-hidden="true" />
+              <span className="choice-copy">
+                <b>Discard the prize</b>
+                <span>Default. Equal bids burn the card and nobody scores.</span>
+              </span>
+            </label>
+            <label className="choice">
+              <input
+                type="radio"
+                name="tie"
+                checked={tieMode === 'carryover'}
+                onChange={() => setTieMode('carryover')}
+              />
+              <span className="choice-dot" aria-hidden="true" />
+              <span className="choice-copy">
+                <b>Carry it over</b>
+                <span>Equal bids roll the points into the next round&rsquo;s pot.</span>
+              </span>
+            </label>
+          </fieldset>
 
-      {err && <p role="alert" className="error">{err}</p>}
+          <button type="submit" className="btn btn-primary btn-lg" disabled={busy || !name.trim()}>
+            {busy ? 'Creating room…' : 'Create room'}
+          </button>
+        </form>
+
+        <div className="home-side">
+          <form onSubmit={joinByCode} className="surface form-card">
+            <header>
+              <h2 className="section-title">Join a game</h2>
+              <p>Got a four-character code from a friend?</p>
+            </header>
+            <label className="field">
+              <span>Room code</span>
+              <input
+                type="text"
+                className="code-input"
+                value={joinCode}
+                onChange={(e) => setJoinCode(e.target.value)}
+                maxLength={4}
+                placeholder="AB23"
+                autoComplete="off"
+                spellCheck={false}
+              />
+            </label>
+            <button type="submit" className="btn btn-ghost btn-lg" disabled={!joinCode.trim()}>
+              Join
+            </button>
+          </form>
+
+          <section className="accent-panel rules-panel">
+            <h2 className="section-title">How a round works</h2>
+            <ol className="steps">
+              <li>A prize card worth 1–13 points turns face up.</li>
+              <li>You each bid one card from your own 1–13 hand, in secret.</li>
+              <li>Higher bid takes the prize. Both cards are spent for good.</li>
+            </ol>
+          </section>
+        </div>
+      </div>
+
+      {err && (
+        <p role="alert" className="error">
+          <AlertIcon />
+          {err}
+        </p>
+      )}
     </main>
   )
 }

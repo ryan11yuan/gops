@@ -33,7 +33,6 @@ export async function handle(fn: () => Promise<Response>): Promise<Response> {
 export function sanitizeName(input: unknown): string | null {
   if (typeof input !== 'string') return null
   const cleaned = input
-    // eslint-disable-next-line no-control-regex
     .replace(/[\u0000-\u001f\u007f]/g, '') // strip control characters
     .replace(/\s+/g, ' ')
     .trim()
