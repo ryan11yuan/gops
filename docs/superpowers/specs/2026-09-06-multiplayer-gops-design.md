@@ -230,6 +230,8 @@ interface PublicState {
   log: LogEntry[];
   finalResult: { p1: number; p2: number; winner: Seat | 'DRAW' } | null;  // GAMEOVER only
   autoAdvanceAt: number | null;  // revealedAt + 3000, so the client can show a countdown
+  youWantRematch: boolean;       // GAMEOVER: this seat has accepted a rematch
+  opponentWantsRematch: boolean; // GAMEOVER: the other seat has accepted
 }
 ```
 
