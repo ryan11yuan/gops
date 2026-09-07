@@ -17,7 +17,11 @@ const serif = Source_Serif_4({
   display: 'swap',
 })
 
-export const metadata = { title: 'GOPS', description: 'Goofspiel — Game of Pure Strategy' }
+export const metadata = {
+  title: 'Goofspiel Online',
+  description: 'Goofspiel — Game of Pure Strategy',
+  icons: { icon: '/images/logo.png' },
+}
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (

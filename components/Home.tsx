@@ -44,12 +44,7 @@ export function Home() {
   return (
     <main className="home">
       <div className="brandbar">
-        <span className="wordmark">
-          <span className="wordmark-glyph" aria-hidden="true">
-            G
-          </span>
-          GOPS
-        </span>
+        <span className="wordmark">Goofspiel Online</span>
       </div>
 
       <section className="hero">
