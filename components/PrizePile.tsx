@@ -1,5 +1,5 @@
-import { DiamondPip } from '@/components/Marks'
-import { rankLabel, rankName } from '@/lib/cards'
+import { PRIZE_SUIT } from '@/lib/cards'
+import { PlayingCard } from '@/components/PlayingCard'
 
 export function PrizePile({
   prizeCard,
@@ -14,17 +14,22 @@ export function PrizePile({
 
   return (
     <section className="prize-pile" aria-label="Prize">
-      <div className="prize-deck" aria-hidden />
-      <div
-        className="pcard prize-card"
-        data-testid="prize-card"
-        role="img"
-        aria-label={prizeCard == null ? 'No prize yet' : rankName(prizeCard)}
-        key={prizeCard ?? 'none'}
-      >
-        <DiamondPip />
-        {prizeCard == null ? '—' : rankLabel(prizeCard)}
-        <DiamondPip />
+      <div className="prize-stack">
+        {prizesRemaining > 1 && <span className="pcard card-back is-back-2" aria-hidden />}
+        {prizesRemaining > 0 && <span className="pcard card-back is-back-1" aria-hidden />}
+        {prizeCard == null ? (
+          <span className="pcard prize-card is-empty" data-testid="prize-card" aria-hidden>
+            &mdash;
+          </span>
+        ) : (
+          <PlayingCard
+            key={prizeCard}
+            rank={prizeCard}
+            suit={PRIZE_SUIT}
+            className="prize-card"
+            testId="prize-card"
+          />
+        )}
       </div>
       <div className="prize-meta">
         <p className="prize-label">On the table</p>

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { rankLabel, rankName } from '@/lib/cards'
+import { cardName, isRedSuit, rankLabel, rankName, seatSuit } from '@/lib/cards'
 import { FULL_HAND } from '@/lib/gameEngine'
 
 describe('rankLabel', () => {
@@ -11,6 +11,20 @@ describe('rankLabel', () => {
   it('falls back to the raw number outside 1..13', () => {
     expect(rankLabel(0)).toBe('0')
     expect(rankLabel(14)).toBe('14')
+  })
+})
+
+describe('suits', () => {
+  it('gives each seat one of the black suits and keeps diamonds for the prize', () => {
+    expect(seatSuit('P1')).toBe('spades')
+    expect(seatSuit('P2')).toBe('clubs')
+    expect(isRedSuit(seatSuit('P1'))).toBe(false)
+    expect(isRedSuit(seatSuit('P2'))).toBe(false)
+    expect(isRedSuit('diamonds')).toBe(true)
+  })
+  it('names a card in full', () => {
+    expect(cardName(12, 'spades')).toBe('Queen of spades')
+    expect(cardName(1, 'diamonds')).toBe('Ace of diamonds')
   })
 })
 

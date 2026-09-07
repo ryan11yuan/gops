@@ -2,9 +2,9 @@
  * Decorative marks and icons.
  *
  * Character marks are flat illustrated faces inside a 2px accent-bordered
- * circle — visual punctuation only, never content. Card pips are the game's
- * own suits: diamonds for the prize row, clubs for a player's hand. UI icons
- * are drawn on a 16px grid at a 1.6 stroke so they sit at one weight.
+ * circle — visual punctuation only, never content. Suit pips live with the
+ * card faces in PlayingCard. UI icons are drawn on a 16px grid at a 1.6
+ * stroke so they sit at one weight.
  */
 
 const MARK_COLORS = ['#097fe8', '#f64932', '#ffb110', '#62aef0'] as const
@@ -112,41 +112,6 @@ export function Sparkle({ size = 22 }: { size?: number }) {
       <path
         d="M19.5 15.5c.35 2.6 1.05 3.3 3.6 3.6-2.55.35-3.25 1.05-3.6 3.6-.35-2.55-1.05-3.25-3.6-3.6 2.55-.3 3.25-1 3.6-3.6Z"
         fill="#ffb110"
-      />
-    </svg>
-  )
-}
-
-/* --- Card pips ---------------------------------------------------------- */
-
-export function DiamondPip({ size = 13 }: { size?: number }) {
-  return (
-    <svg
-      className="pip"
-      width={size}
-      height={size}
-      viewBox="0 0 16 16"
-      aria-hidden="true"
-      focusable="false"
-    >
-      <path d="M8 1.2 13.4 8 8 14.8 2.6 8 8 1.2Z" fill="currentColor" />
-    </svg>
-  )
-}
-
-export function ClubPip({ size = 13 }: { size?: number }) {
-  return (
-    <svg
-      className="pip"
-      width={size}
-      height={size}
-      viewBox="0 0 16 16"
-      aria-hidden="true"
-      focusable="false"
-    >
-      <path
-        d="M8 1.4a3 3 0 0 1 2.2 5.03 3 3 0 1 1 1.1 5.44A3.1 3.1 0 0 1 9 10.5c.05 1.9.6 3.15 1.5 4.1h-5c.9-.95 1.45-2.2 1.5-4.1a3.1 3.1 0 0 1-2.3 1.37A3 3 0 1 1 5.8 6.43 3 3 0 0 1 8 1.4Z"
-        fill="currentColor"
       />
     </svg>
   )

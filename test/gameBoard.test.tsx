@@ -37,13 +37,13 @@ describe('GameBoard', () => {
 
   it('BIDDING: clicking a card calls actions.bid', async () => {
     render(<GameBoard code="AB23" error={null} actions={actions} state={base} />)
-    await userEvent.click(screen.getByRole('button', { name: 'Queen' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Queen of spades' }))
     expect(actions.bid).toHaveBeenCalledWith(12)
   })
 
   it('BIDDING: after locking, the hand is disabled and a waiting banner shows', () => {
     render(<GameBoard code="AB23" error={null} actions={actions} state={{ ...base, youLocked: true }} />)
-    expect(screen.getByRole('button', { name: 'Queen' })).toBeDisabled()
+    expect(screen.getByRole('button', { name: 'Queen of spades' })).toBeDisabled()
     expect(screen.getByRole('status')).toHaveTextContent(/waiting for opponent/i)
   })
 

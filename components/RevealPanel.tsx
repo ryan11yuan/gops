@@ -1,6 +1,6 @@
 import type { PublicState, Seat } from '@/lib/types'
-import { ClubPip } from '@/components/Marks'
-import { rankLabel, rankName } from '@/lib/cards'
+import { seatSuit } from '@/lib/cards'
+import { PlayingCard } from '@/components/PlayingCard'
 
 export function RevealPanel({
   reveal,
@@ -23,28 +23,22 @@ export function RevealPanel({
     <section className={`reveal${tone}`} aria-label="Round result">
       <div className="reveal-cards">
         <div className="reveal-slot">
-          <span
-            className={`pcard reveal-card${youSeat === 'P1' ? ' is-yours' : ''}`}
-            data-testid="reveal-p1"
-            role="img"
-            aria-label={rankName(reveal.p1Card)}
-          >
-            <ClubPip size={11} />
-            {rankLabel(reveal.p1Card)}
-          </span>
+          <PlayingCard
+            rank={reveal.p1Card}
+            suit={seatSuit('P1')}
+            className={`reveal-card${youSeat === 'P1' ? ' is-yours' : ''}`}
+            testId="reveal-p1"
+          />
           <span className="caption">{youSeat === 'P1' ? 'You' : 'Them'}</span>
         </div>
         <span className="reveal-vs">vs</span>
         <div className="reveal-slot">
-          <span
-            className={`pcard reveal-card is-second${youSeat === 'P2' ? ' is-yours' : ''}`}
-            data-testid="reveal-p2"
-            role="img"
-            aria-label={rankName(reveal.p2Card)}
-          >
-            <ClubPip size={11} />
-            {rankLabel(reveal.p2Card)}
-          </span>
+          <PlayingCard
+            rank={reveal.p2Card}
+            suit={seatSuit('P2')}
+            className={`reveal-card is-second${youSeat === 'P2' ? ' is-yours' : ''}`}
+            testId="reveal-p2"
+          />
           <span className="caption">{youSeat === 'P2' ? 'You' : 'Them'}</span>
         </div>
       </div>

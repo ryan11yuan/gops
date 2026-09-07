@@ -88,6 +88,10 @@
   --radius-cards: 12px;
   --radius-pills: 9999px;
 
+  /* Playing-card width. Every card measurement derives from it; a size
+     variant sets it on the card or on any ancestor. */
+  --card-w: 72px;
+
   /* --- Layout ----------------------------------------------------------- */
   --page-max-width: 1440px;
   --card-padding: 24px;
@@ -884,25 +888,193 @@ input:not([type]):focus {
 
 /* ==========================================================================
    Playing cards
+   A real card face at the 2.5 x 3.5 poker ratio: corner index top-left and
+   the same pair rotated bottom-right, the standard pip arrangement for 2-10,
+   an oversized single pip for the ace, and a drawn court panel for J/Q/K.
+   Every measurement derives from --card-w, so a size variant sets one value
+   and the whole face - pips, indices, courts, corner radius - follows.
    ========================================================================== */
 
 .pcard {
+  --card-radius: calc(var(--card-w) * 0.085);
+  --court-robe: var(--color-sky-tint);
   position: relative;
-  display: grid;
-  place-items: center;
+  flex: none;
+  width: var(--card-w);
+  height: calc(var(--card-w) / 0.7);
   background: var(--surface-card);
   border: 1px solid var(--border-strong);
-  border-radius: var(--radius-cards);
-  font-variant-numeric: tabular-nums lining-nums;
+  border-radius: var(--card-radius);
+  overflow: hidden;
+  font-size: calc(var(--card-w) * 0.17);
   font-weight: 700;
-  letter-spacing: -0.03em;
-  color: var(--ink-100);
+  font-variant-numeric: lining-nums;
+  letter-spacing: -0.08em;
+  line-height: 1;
+  color: var(--ink-95);
 }
 
-.pcard .pip {
+.pcard.is-red {
+  --court-robe: var(--color-peach);
+  color: var(--color-red-ink);
+}
+
+.pcard .suit {
+  display: block;
+  width: 0.52em;
+  height: 0.52em;
+}
+
+/* --- Corner indices ----------------------------------------------------- */
+
+.pcard-index {
   position: absolute;
-  top: 7px;
-  left: 7px;
+  top: 0.16em;
+  left: 0.2em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.05em;
+}
+
+/* The ten is the one index wide enough to reach the pips; condense it the
+   way a printed deck does. */
+.pcard-index.is-wide .pcard-rank {
+  display: block;
+  transform: scaleX(0.78);
+}
+
+.pcard-index.is-inverted {
+  top: auto;
+  left: auto;
+  right: 0.2em;
+  bottom: 0.16em;
+  rotate: 180deg;
+}
+
+/* --- Pips --------------------------------------------------------------- */
+
+.pcard-pips {
+  position: absolute;
+  inset: 13% 26%;
+}
+
+.pcard-pips .suit {
+  position: absolute;
+  width: calc(var(--card-w) * 0.2);
+  height: calc(var(--card-w) * 0.2);
+  translate: -50% -50%;
+}
+
+.pcard-pips .suit.is-inverted {
+  rotate: 180deg;
+}
+
+.pcard-ace {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+
+.pcard-ace .suit {
+  width: calc(var(--card-w) * 0.44);
+  height: calc(var(--card-w) * 0.44);
+}
+
+/* --- Court panel -------------------------------------------------------- */
+
+.pcard-court {
+  position: absolute;
+  inset: 8% 18%;
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  border: 1px solid currentColor;
+  border-radius: calc(var(--card-w) * 0.025);
+}
+
+.pcard-court-half {
+  overflow: hidden;
+}
+
+.pcard-court-half:first-child {
+  border-bottom: 1px solid currentColor;
+}
+
+.pcard-court-half.is-inverted {
+  rotate: 180deg;
+}
+
+.pcard-court svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.court-line {
+  stroke: currentColor;
+  stroke-width: 1.4;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.court-stroke,
+.court-blade {
+  fill: none;
+}
+
+.court-blade {
+  stroke-width: 3.2;
+}
+
+.court-skin {
+  fill: var(--surface-card);
+}
+
+.court-robe {
+  fill: var(--court-robe);
+}
+
+.court-crown {
+  fill: var(--color-marigold);
+}
+
+.court-emblem {
+  fill: currentColor;
+}
+
+.court-ink {
+  fill: rgba(0, 0, 0, 0.85);
+}
+
+.court-ink-stroke {
+  fill: none;
+  stroke: rgba(0, 0, 0, 0.85);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+}
+
+/* --- The face-down deck ------------------------------------------------- */
+
+.card-back::after {
+  content: '';
+  position: absolute;
+  inset: 5.5%;
+  border-radius: calc(var(--card-w) * 0.04);
+  background:
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.9) 0 1.5px, transparent 1.5px 9px),
+    repeating-linear-gradient(-45deg, rgba(255, 255, 255, 0.9) 0 1.5px, transparent 1.5px 9px),
+    var(--color-coral);
+}
+
+.card-back.is-back-1 {
+  rotate: -5deg;
+  translate: calc(var(--card-w) * -0.08) 2px;
+}
+
+.card-back.is-back-2 {
+  rotate: -10deg;
+  translate: calc(var(--card-w) * -0.16) 5px;
 }
 
 /* --- Prize -------------------------------------------------------------- */
@@ -916,16 +1088,29 @@ input:not([type]):focus {
   padding: var(--spacing-24);
 }
 
+.prize-stack {
+  --card-w: 106px;
+  position: relative;
+  display: grid;
+  flex: none;
+}
+
+.prize-stack > * {
+  grid-area: 1 / 1;
+}
+
 .prize-card {
-  width: 104px;
-  height: 144px;
-  font-size: 46px;
+  z-index: 1;
   box-shadow: var(--elevation-play);
   animation: prize-in 340ms var(--ease-spring) both;
 }
 
-.prize-card .pip {
-  color: var(--color-coral);
+.prize-card.is-empty {
+  display: grid;
+  place-items: center;
+  font-size: calc(var(--card-w) * 0.4);
+  color: var(--ink-40);
+  animation: none;
 }
 
 @keyframes prize-in {
@@ -980,10 +1165,6 @@ input:not([type]):focus {
   font-variant-numeric: tabular-nums;
 }
 
-.prize-deck {
-  display: none;
-}
-
 /* --- Hand --------------------------------------------------------------- */
 
 .hand-block {
@@ -1007,52 +1188,37 @@ input:not([type]):focus {
 }
 
 .card-btn {
-  position: relative;
-  width: 58px;
-  height: 82px;
+  display: block;
   padding: 0;
-  display: grid;
-  place-items: center;
+  border: 0;
+  background: none;
   font: inherit;
-  font-size: var(--text-heading-sm);
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  font-variant-numeric: tabular-nums lining-nums;
+  color: inherit;
   cursor: pointer;
-  background: var(--surface-card);
-  color: var(--ink-100);
-  border: 1px solid var(--border-strong);
-  border-radius: var(--radius-cards);
+  border-radius: 6px;
+}
+
+.card-btn .pcard {
   transition: transform var(--dur) var(--ease), border-color var(--dur) var(--ease),
-    background-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+    box-shadow var(--dur) var(--ease), opacity var(--dur) var(--ease);
 }
 
-.card-btn .pip {
-  position: absolute;
-  top: 6px;
-  left: 6px;
-  color: var(--ink-60);
-}
-
-.card-btn:not(:disabled):hover {
+.card-btn:not(:disabled):hover .pcard {
   transform: translateY(-6px);
   border-color: var(--color-notion-blue);
   box-shadow: var(--elevation-play);
 }
 
-.card-btn:not(:disabled):active {
+.card-btn:not(:disabled):active .pcard {
   transform: translateY(-2px);
 }
 
 .card-btn:disabled {
   cursor: default;
-  color: var(--ink-40);
-  background: rgba(0, 0, 0, 0.02);
-  border-color: var(--border);
 }
 
-.card-btn:disabled .pip {
-  color: var(--ink-20);
+.card-btn:disabled .pcard {
+  opacity: 0.5;
 }
 
 /* ==========================================================================
@@ -1077,18 +1243,12 @@ input:not([type]):focus {
 }
 
 .reveal-card {
-  width: 76px;
-  height: 106px;
-  font-size: var(--text-heading);
+  --card-w: 78px;
   animation: flip-in 400ms var(--ease) both;
 }
 
-.reveal-card .pip {
-  color: var(--ink-60);
-}
-
 .reveal-card.is-yours {
-  border-color: var(--color-notion-blue);
+  border: 2px solid var(--color-notion-blue);
 }
 
 .reveal-card.is-second {
@@ -1385,15 +1545,6 @@ input:not([type]):focus {
   gap: var(--spacing-20);
 }
 
-/* Second pip sits bottom-right, rotated, like a real card face. */
-.pcard .pip:nth-of-type(2) {
-  top: auto;
-  left: auto;
-  right: 7px;
-  bottom: 7px;
-  transform: rotate(180deg);
-}
-
 .reveal-slot {
   display: flex;
   flex-direction: column;
@@ -1422,14 +1573,8 @@ input:not([type]):focus {
     padding: var(--spacing-16) var(--spacing-16) var(--spacing-64);
   }
 
-  .card-btn {
-    width: 46px;
-    height: 66px;
-    font-size: var(--text-body);
-  }
-
-  .card-btn .pip {
-    display: none;
+  .card-btn .pcard {
+    --card-w: 56px;
   }
 
   .prize-pile {
@@ -1438,16 +1583,12 @@ input:not([type]):focus {
     gap: var(--spacing-16);
   }
 
-  .prize-card {
-    width: 88px;
-    height: 122px;
-    font-size: var(--text-heading);
+  .prize-stack {
+    --card-w: 88px;
   }
 
   .reveal-card {
-    width: 64px;
-    height: 90px;
-    font-size: 30px;
+    --card-w: 66px;
   }
 
   .score-value {
@@ -1482,7 +1623,7 @@ input:not([type]):focus {
     transition-duration: 0.01ms !important;
   }
 
-  .card-btn:not(:disabled):hover {
+  .card-btn:not(:disabled):hover .pcard {
     transform: none;
   }
 }

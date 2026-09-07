@@ -4,6 +4,9 @@
 import type { PublicState } from '@/lib/types'
 import { GameBoard } from '@/components/GameBoard'
 import { NameGate } from '@/components/NameGate'
+import { PlayingCard } from '@/components/PlayingCard'
+import { FULL_HAND } from '@/lib/gameEngine'
+import type { Suit } from '@/lib/cards'
 
 const log = [
   { round: 1, prize: 7, carryApplied: 0, p1Card: 9, p2Card: 4, winner: 'P1' as const, awarded: 7 },
@@ -48,9 +51,31 @@ const base: PublicState = {
 const noop = async () => {}
 const actions = { bid: noop, rematch: noop }
 
+const SUITS: Suit[] = ['spades', 'hearts', 'diamonds', 'clubs']
+
 export default function Preview() {
   return (
     <>
+      <main className="board" style={{ gap: 16 }}>
+        {SUITS.map((suit) => (
+          <div key={suit} className="hand" style={{ justifyContent: 'flex-start' }}>
+            {FULL_HAND.map((rank) => (
+              <PlayingCard key={rank} rank={rank} suit={suit} />
+            ))}
+          </div>
+        ))}
+        <div className="prize-pile">
+          <div className="prize-stack">
+            <span className="pcard card-back is-back-2" />
+            <span className="pcard card-back is-back-1" />
+            <PlayingCard rank={13} suit="diamonds" className="prize-card" />
+          </div>
+          <div className="prize-meta">
+            <p className="prize-label">On the table</p>
+            <p className="prize-worth numeric">Worth 13 points</p>
+          </div>
+        </div>
+      </main>
       <GameBoard state={{ ...base, phase: 'LOBBY' }} error={null} actions={actions} code="K4M9" />
 
       <GameBoard state={base} error={null} actions={actions} code="K4M9" />

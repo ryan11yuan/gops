@@ -8,6 +8,7 @@ import { Scoreboard } from '@/components/Scoreboard'
 import { RevealPanel } from '@/components/RevealPanel'
 import { RoundLog } from '@/components/RoundLog'
 import { StatusBanner } from '@/components/StatusBanner'
+import { seatSuit } from '@/lib/cards'
 import { EndScreen } from '@/components/EndScreen'
 import { CharacterMark, CheckIcon, LinkIcon } from '@/components/Marks'
 
@@ -101,6 +102,7 @@ export function GameBoard({
       <StatusBanner message={status?.message ?? null} tone={status?.tone} />
       <Hand
         hand={state.you.hand}
+        suit={seatSuit(state.you.seat)}
         disabled={handDisabled}
         onPick={(card) => void actions.bid(card)}
       />

@@ -30,17 +30,21 @@ describe('PrizePile', () => {
 describe('Hand', () => {
   it('renders a button per card and fires onPick when enabled', async () => {
     const onPick = vi.fn()
-    render(<Hand hand={[1, 5, 13]} disabled={false} onPick={onPick} />)
-    await userEvent.click(screen.getByRole('button', { name: 'Five' }))
+    render(<Hand hand={[1, 5, 13]} suit="clubs" disabled={false} onPick={onPick} />)
+    await userEvent.click(screen.getByRole('button', { name: 'Five of clubs' }))
     expect(onPick).toHaveBeenCalledWith(5)
   })
-  it('labels cards by rank rather than number', () => {
-    render(<Hand hand={[1, 5, 11, 12, 13]} disabled={false} onPick={() => {}} />)
-    expect(screen.getAllByRole('button').map((b) => b.textContent)).toEqual(['A', '5', 'J', 'Q', 'K'])
-    expect(screen.getByRole('button', { name: 'Ace' })).toBeInTheDocument()
+  it('deals the whole hand in the seat suit', () => {
+    render(<Hand hand={[1, 11, 12, 13]} suit="spades" disabled={false} onPick={() => {}} />)
+    expect(screen.getAllByRole('button').map((b) => b.getAttribute('aria-label'))).toEqual([
+      'Ace of spades',
+      'Jack of spades',
+      'Queen of spades',
+      'King of spades',
+    ])
   })
   it('disables every card when disabled', () => {
-    render(<Hand hand={[1, 5, 13]} disabled onPick={() => {}} />)
+    render(<Hand hand={[1, 5, 13]} suit="clubs" disabled onPick={() => {}} />)
     screen.getAllByRole('button').forEach((b) => expect(b).toBeDisabled())
   })
 })

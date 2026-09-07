@@ -1,12 +1,15 @@
-import { ClubPip } from '@/components/Marks'
-import { rankLabel, rankName } from '@/lib/cards'
+import type { Suit } from '@/lib/cards'
+import { cardName } from '@/lib/cards'
+import { PlayingCard } from '@/components/PlayingCard'
 
 export function Hand({
   hand,
+  suit,
   disabled,
   onPick,
 }: {
   hand: number[]
+  suit: Suit
   disabled: boolean
   onPick: (card: number) => void
 }) {
@@ -22,12 +25,11 @@ export function Hand({
             key={card}
             type="button"
             className="card-btn"
-            aria-label={rankName(card)}
+            aria-label={cardName(card, suit)}
             disabled={disabled}
             onClick={() => onPick(card)}
           >
-            <ClubPip size={11} />
-            {rankLabel(card)}
+            <PlayingCard rank={card} suit={suit} />
           </button>
         ))}
       </div>
