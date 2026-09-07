@@ -164,11 +164,13 @@ export function PlayingCard({
   suit,
   className,
   testId,
+  style,
 }: {
   rank: number
   suit: Suit
   className?: string
   testId?: string
+  style?: React.CSSProperties
 }) {
   const label = rankLabel(rank)
   const index = `pcard-index${label.length > 1 ? ' is-wide' : ''}`
@@ -180,6 +182,7 @@ export function PlayingCard({
       role="img"
       aria-label={cardName(rank, suit)}
       data-testid={testId}
+      style={style}
     >
       <span className={index}>
         <span className="pcard-rank">{label}</span>

@@ -1,5 +1,5 @@
 import { GameError } from '@/lib/types'
-import type { RoomState, Seat, SeatState, TieMode, LogEntry } from '@/lib/types'
+import type { RoomState, Seat, SeatState, TieMode, LogEntry, Phase } from '@/lib/types'
 import { makeSeed, randomId, shuffle } from '@/lib/rng'
 
 export const FULL_HAND: readonly number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
@@ -180,6 +180,19 @@ export function advanceRound(state: RoomState, now?: number): RoomState {
     bids: { P1: null, P2: null },
     revealedAt: null,
   }
+}
+
+/**
+ * The prize cards still sitting on the table from unresolved ties, oldest-first.
+ *
+ * Their face values sum to `carry`. During RESULT the newest tie is excluded:
+ * its prize is still the card being shown as the round's prize, and it only
+ * slides into the carried fan once `advanceRound` deals the next one.
+ */
+export function carriedPrizeCards(log: LogEntry[], phase: Phase): number[] {
+  const streak: number[] = []
+  for (let i = log.length - 1; i >= 0 && log[i].winner === 'TIE'; i--) streak.unshift(log[i].prize)
+  return phase === 'RESULT' ? streak.slice(0, -1) : streak
 }
 
 export function finalResult(state: RoomState): { p1: number; p2: number; winner: Seat | 'DRAW' } {

@@ -15,6 +15,12 @@ const log = [
   { round: 4, prize: 11, carryApplied: 5, p1Card: 13, p2Card: 8, winner: 'P1' as const, awarded: 16 },
 ]
 
+const tie = (round: number, prize: number) =>
+  ({ round, prize, carryApplied: 0, p1Card: 6, p2Card: 6, winner: 'TIE' as const, awarded: 0 })
+
+const tiedOnce = [...log, tie(5, 10)]
+const tiedThrice = [...log, tie(5, 10), tie(6, 3), tie(7, 12)]
+
 const base: PublicState = {
   code: 'K4M9',
   phase: 'BIDDING',
@@ -82,6 +88,30 @@ export default function Preview() {
 
       <GameBoard
         state={{ ...base, carry: 5, youLocked: true, prizeCard: 12 }}
+        error={null}
+        actions={actions}
+        code="K4M9"
+      />
+
+      {/* Tie carryover: the tied card stays face up under the new prize. */}
+      <GameBoard
+        state={{ ...base, phase: 'RESULT', prizeCard: 10, carry: 10, log: tiedOnce,
+          reveal: { p1Card: 6, p2Card: 6, winner: 'TIE', awarded: 0 },
+          autoAdvanceAt: Date.now() + 3000 }}
+        error={null}
+        actions={actions}
+        code="K4M9"
+      />
+
+      <GameBoard
+        state={{ ...base, prizeCard: 11, carry: 10, round: 6, log: tiedOnce }}
+        error={null}
+        actions={actions}
+        code="K4M9"
+      />
+
+      <GameBoard
+        state={{ ...base, prizeCard: 9, carry: 25, round: 8, log: tiedThrice }}
         error={null}
         actions={actions}
         code="K4M9"

@@ -11,6 +11,7 @@ import { StatusBanner } from '@/components/StatusBanner'
 import { seatSuit } from '@/lib/cards'
 import { EndScreen } from '@/components/EndScreen'
 import { CharacterMark, CheckIcon, LinkIcon } from '@/components/Marks'
+import { carriedPrizeCards } from '@/lib/gameEngine'
 
 type Actions = { bid: (card: number) => Promise<void>; rematch: () => Promise<void> }
 
@@ -90,6 +91,7 @@ export function GameBoard({
         prizeCard={state.prizeCard}
         prizesRemaining={state.prizesRemaining}
         carry={state.carry}
+        carried={carriedPrizeCards(state.log, state.phase)}
       />
       {state.phase === 'RESULT' && state.reveal && (
         <RevealPanel

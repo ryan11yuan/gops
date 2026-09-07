@@ -1067,14 +1067,16 @@ input:not([type]):focus {
     var(--color-coral);
 }
 
+/* The deck droops down-left. When tied prizes are fanned up-left on top of it,
+   it slides out by the full depth of that fan so it keeps peeking out. */
 .card-back.is-back-1 {
   rotate: -5deg;
-  translate: calc(var(--card-w) * -0.08) 2px;
+  translate: calc(var(--card-w) * -0.08 - var(--fan-x, 0px) * var(--carried, 0)) 2px;
 }
 
 .card-back.is-back-2 {
   rotate: -10deg;
-  translate: calc(var(--card-w) * -0.16) 5px;
+  translate: calc(var(--card-w) * -0.16 - var(--fan-x, 0px) * var(--carried, 0)) 5px;
 }
 
 /* --- Prize -------------------------------------------------------------- */
@@ -1090,9 +1092,15 @@ input:not([type]):focus {
 
 .prize-stack {
   --card-w: 106px;
+  /* One step of the carried-card fan. The stack reserves this much padding per
+     carried card so a long tie streak fans up-left without leaving the panel. */
+  --fan-x: calc(var(--card-w) * 0.13);
+  --fan-y: 7px;
   position: relative;
   display: grid;
   flex: none;
+  padding-left: calc(var(--fan-x) * var(--carried, 0));
+  padding-top: calc(var(--fan-y) * var(--carried, 0));
 }
 
 .prize-stack > * {
@@ -1121,6 +1129,27 @@ input:not([type]):focus {
   to {
     transform: none;
     opacity: 1;
+  }
+}
+
+/* Prizes still on the table from an unresolved tie. They fan up and to the
+   left of the current prize — the direction that keeps each corner index
+   readable — so the pot shows as cards, not only as the carry badge. The
+   deck droops down-left instead, which keeps the two piles apart. `--i` counts
+   back from the top card, so the oldest tie sits furthest out. */
+.prize-carried {
+  box-shadow: var(--elevation-play);
+  rotate: calc(-6deg * var(--i));
+  translate: calc(var(--fan-x) * -1 * var(--i)) calc(var(--fan-y) * -1 * var(--i));
+  animation: carried-settle 340ms var(--ease-spring) both;
+}
+
+/* No `to` frame: the card animates out from under the incoming prize to
+   wherever its own `--i` puts it. */
+@keyframes carried-settle {
+  from {
+    rotate: 0deg;
+    translate: 0 0;
   }
 }
 

@@ -5,18 +5,35 @@ export function PrizePile({
   prizeCard,
   prizesRemaining,
   carry,
+  carried = [],
 }: {
   prizeCard: number | null
   prizesRemaining: number
   carry: number
+  /** Tied prizes still on the table, oldest-first. Fanned face-up under the prize. */
+  carried?: number[]
 }) {
   const pot = (prizeCard ?? 0) + carry
 
   return (
     <section className="prize-pile" aria-label="Prize">
-      <div className="prize-stack">
+      <div
+        className="prize-stack"
+        data-testid="prize-stack"
+        style={{ '--carried': carried.length } as React.CSSProperties}
+      >
         {prizesRemaining > 1 && <span className="pcard card-back is-back-2" aria-hidden />}
         {prizesRemaining > 0 && <span className="pcard card-back is-back-1" aria-hidden />}
+        {carried.map((card, i) => (
+          <PlayingCard
+            key={`${card}-${i}`}
+            rank={card}
+            suit={PRIZE_SUIT}
+            className="prize-carried"
+            testId="carried-card"
+            style={{ '--i': carried.length - i } as React.CSSProperties}
+          />
+        ))}
         {prizeCard == null ? (
           <span className="pcard prize-card is-empty" data-testid="prize-card" aria-hidden>
             &mdash;

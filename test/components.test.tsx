@@ -25,6 +25,30 @@ describe('PrizePile', () => {
     render(<PrizePile prizeCard={9} prizesRemaining={7} carry={0} />)
     expect(screen.queryByText(/carried/i)).not.toBeInTheDocument()
   })
+
+  it('shows no carried cards when nothing has been tied', () => {
+    render(<PrizePile prizeCard={9} prizesRemaining={7} carry={0} />)
+    expect(screen.queryAllByTestId('carried-card')).toHaveLength(0)
+  })
+
+  it('keeps the tied card face up under the new prize', () => {
+    render(<PrizePile prizeCard={11} prizesRemaining={6} carry={10} carried={[10]} />)
+    expect(screen.getByTestId('prize-card')).toHaveTextContent('J')
+    const carried = screen.getAllByTestId('carried-card')
+    expect(carried).toHaveLength(1)
+    expect(carried[0]).toHaveAccessibleName('Ten of diamonds')
+  })
+
+  it('fans the oldest carried card furthest from the top of the pile', () => {
+    render(<PrizePile prizeCard={12} prizesRemaining={4} carry={13} carried={[10, 3]} />)
+    const carried = screen.getAllByTestId('carried-card')
+    expect(carried.map((el) => el.style.getPropertyValue('--i'))).toEqual(['2', '1'])
+  })
+
+  it('tells the stack how deep the fan is so it can reserve room', () => {
+    render(<PrizePile prizeCard={12} prizesRemaining={4} carry={13} carried={[10, 3]} />)
+    expect(screen.getByTestId('prize-stack').style.getPropertyValue('--carried')).toBe('2')
+  })
 })
 
 describe('Hand', () => {

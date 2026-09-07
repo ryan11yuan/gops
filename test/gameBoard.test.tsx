@@ -55,6 +55,38 @@ describe('GameBoard', () => {
     expect(screen.getByRole('status')).toHaveTextContent(/disconnected/i)
   })
 
+  it('BIDDING: a tied prize stays face up under the new one', () => {
+    render(
+      <GameBoard code="AB23" error={null} actions={actions}
+        state={{
+          ...base,
+          tieMode: 'carryover',
+          round: 2,
+          prizeCard: 11,
+          carry: 10,
+          log: [{ round: 1, prize: 10, carryApplied: 0, p1Card: 5, p2Card: 5, winner: 'TIE', awarded: 0 }],
+        }} />,
+    )
+    expect(screen.getByTestId('prize-card')).toHaveTextContent('J')
+    expect(screen.getByTestId('carried-card')).toHaveAccessibleName('Ten of diamonds')
+  })
+
+  it('RESULT: the tied prize is not doubled up while its own reveal is showing', () => {
+    render(
+      <GameBoard code="AB23" error={null} actions={actions}
+        state={{
+          ...base,
+          phase: 'RESULT',
+          tieMode: 'carryover',
+          prizeCard: 10,
+          carry: 10,
+          reveal: { p1Card: 5, p2Card: 5, winner: 'TIE', awarded: 0 },
+          log: [{ round: 1, prize: 10, carryApplied: 0, p1Card: 5, p2Card: 5, winner: 'TIE', awarded: 0 }],
+        }} />,
+    )
+    expect(screen.queryAllByTestId('carried-card')).toHaveLength(0)
+  })
+
   it('RESULT: shows the reveal panel', () => {
     render(
       <GameBoard code="AB23" error={null} actions={actions}
